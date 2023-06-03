@@ -1,0 +1,30 @@
+.container {
+  @apply flex flex-col h-screen;
+}
+
+.content {
+  @apply flex flex-1 justify-center items-start;
+}
+
+.calendar {
+  /* @apply relative max-w-full w-[540px] grid grid-cols-1; */
+  position: relative;
+  max-width: 100%;
+  width: 540px;
+  grid-template-columns: 1fr;
+}
+
+.open {
+  grid-template-columns: 1fr 280px;
+}
+
+.close {
+  width: 540px;
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 900px) {
+  .open {
+    grid-template-columns: 1fr;
+  }
+}
