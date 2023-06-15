@@ -1,198 +1,150 @@
 import { injectable, inject } from "tsyringe";
-import { sign } from "jsonwebtoken";
 
-// config
-import authConfig from "@config/auth";
-
-// errors
+// erros
 import { AppError } from "@shared/errors/AppError";
 
 // helpers
 import { MessagesHelper } from "@helpers/MessagesHelper";
 
-// providers
-import { IDateProvider } from "@shared/container/providers/DateProvider/models/IDateProvider";
-
-// repositories
-import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
+// respositories
 import { IStudentsRepository } from "@modules/students/repositories/IStudentsRepository";
-import { ITeachingUnitsRepository } from "@modules/teachingUnits/repositories/ITeachingUnitsRepository";
+import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
+import { IRolesRepository } from "@modules/roles/repositories/IRolesRepository";
+import { ISchoolsRepository } from "@modules/schools/repositories/ISchoolsRepository";
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
 import { IDisciplinesRepository } from "@modules/disciplines/repositories/IDisciplinesRepository";
-import { IRolesRepository } from "@modules/roles/repositories/IRolesRepository";
-import { IUserTokensRepository } from "@modules/users/repositories/IUserTokensRepository";
 
 // entities
-import { StudentEntity } from "../infra/typeorm/entities/StudentEntity";
+import { StudentEntity } from "@modules/students/infra/typeorm/entities/StudentEntity";
 import { RoleEntity } from "@modules/roles/infra/typeorm/entities/RoleEntity";
+import { DisciplineEntity } from "@modules/disciplines/infra/typeorm/entities/DisciplineEntity";
 
 interface IRequest {
-  fullName?: string;
-  displayName?: string;
+  fullName: string;
+  displayName: string;
   email: string;
-  secundaryEmail?: string;
-  unitId: string;
+  secondaryEmail?: string;
+  schoolId: string;
   courseId: string;
-  disciplineId: string;
+  disciplineIds: string[];
   phone?: string;
+  isWhatsapp: boolean;
+  isPhoneVisible: boolean;
 }
 
 interface IResponse {
   student: StudentEntity;
-  token: string;
-  refreshToken: string;
 }
 
 @injectable()
 export class CreateStudentService {
   constructor(
     // @ts-ignore
+    @inject("StudentsRepository")
+    private readonly studentsRepository: IStudentsRepository,
+
+    // @ts-ignore
     @inject("UsersRepository")
-    private usersRepository: IUsersRepository,
-
-    // @ts-ignore
-    @inject("TeachingUnitsRepository")
-    private teachingUnitsRepository: ITeachingUnitsRepository,
-
-    // @ts-ignore
-    @inject("CoursesRepository")
-    private coursesRepository: ICoursesRepository,
-
-    // @ts-ignore
-    @inject("DisciplinesRepository")
-    private disciplinesRepository: IDisciplinesRepository,
+    private readonly usersRepository: IUsersRepository,
 
     // @ts-ignore
     @inject("RolesRepository")
-    private rolesRepository: IRolesRepository,
+    private readonly rolesRepository: IRolesRepository,
 
     // @ts-ignore
-    @inject("UserTokensRepository")
-    private userTokensRepository: IUserTokensRepository,
+    @inject("SchoolsRepository")
+    private readonly schoolsRepository: ISchoolsRepository,
 
     // @ts-ignore
-    @inject("DayjsDateProvider")
-    private dateProvider: IDateProvider,
+    @inject("CoursesRepository")
+    private readonly coursesRepository: ICoursesRepository,
 
     // @ts-ignore
-    @inject("StudentsRepository")
-    private studentsRepository: IStudentsRepository,
+    @inject("DisciplinesRepository")
+    private readonly disciplinesRepository: IDisciplinesRepository,
   ) {}
 
   public async execute({
     fullName,
     displayName,
     email,
-    // secundaryEmail,
-    unitId,
+    secondaryEmail,
     courseId,
-    disciplineId,
-  }: // phone
-  IRequest): Promise<IResponse> {
+    schoolId,
+    disciplineIds,
+    phone,
+    isWhatsapp,
+    isPhoneVisible,
+  }: IRequest): Promise<IResponse> {
     const findUser = await this.usersRepository.findByEmail(email);
 
-    if (!findUser || !findUser.id) {
+    if (!findUser) {
       throw new AppError(MessagesHelper.USER_NOT_FOUND, 404);
     }
 
-    if (fullName) {
-      findUser.fullName = fullName;
-    }
-
-    if (displayName) {
-      findUser.displayName = displayName;
-    }
-
-    findUser.isProfileCompleted = true;
+    const roles: RoleEntity[] = [];
 
     const findRole = await this.rolesRepository.findByName("student");
 
-    const roles: RoleEntity[] = [];
-
     if (!findRole) {
-      throw new AppError("", 404);
+      throw new AppError(MessagesHelper.ROLE_NOT_FOUND, 404);
     }
 
     roles.push(findRole);
 
+    findUser.fullName = fullName;
+    findUser.displayName = displayName;
+
+    if (secondaryEmail) {
+      findUser.secondaryEmail = secondaryEmail;
+    }
+
+    if (phone) {
+      findUser.phone = phone;
+      findUser.isWhatsapp = isWhatsapp;
+      findUser.isPhoneVisible = isPhoneVisible;
+    }
+
     findUser.roles = roles;
+    findUser.isProfileCompleted = true;
 
-    const {
-      secretToken,
-      expiresInToken,
-      secretRefreshToken,
-      expiresInRefreshToken,
-      expiresInRefreshTokenDays,
-    } = authConfig;
+    const updateUser = await this.usersRepository.update(findUser);
 
-    const roleNames = findUser.roles.map((role) => role.name);
+    const findSchool = await this.schoolsRepository.findById(schoolId);
 
-    // token
-    const token = sign(
-      {
-        roles: roleNames,
-      },
-      secretToken,
-      {
-        subject: findUser.id,
-        expiresIn: expiresInToken,
-      },
-    );
-
-    // refresh token
-    const refreshToken = sign({ email }, secretRefreshToken, {
-      subject: findUser.id,
-      expiresIn: expiresInRefreshToken,
-    });
-
-    const refreshTokenExpiresDate = this.dateProvider.addDays(
-      expiresInRefreshTokenDays,
-    );
-
-    await this.userTokensRepository.create({
-      userId: findUser.id,
-      token,
-      expiresDate: refreshTokenExpiresDate,
-      tokenType: "refresh_token",
-    });
-
-    // if (secundaryEmail) {
-    //   findUser.secundaryEmail = secundaryEmail;
-    // }
-
-    await this.usersRepository.update(findUser);
-
-    const findUnit = await this.teachingUnitsRepository.findById(unitId);
-
-    if (!findUnit) {
-      throw new AppError("", 404);
+    if (!findSchool) {
+      throw new AppError(MessagesHelper.SCHOOL_NOT_FOUND, 404);
     }
 
     const findCourse = await this.coursesRepository.findById(courseId);
 
     if (!findCourse) {
-      throw new AppError("", 404);
+      throw new AppError(MessagesHelper.COURSE_NOT_FOUND, 404);
     }
 
-    const findDiscipline = await this.disciplinesRepository.findById(
-      disciplineId,
-    );
+    const disciplines: DisciplineEntity[] = [];
 
-    if (!findDiscipline) {
-      throw new AppError("", 404);
+    for (const disciplineId of disciplineIds) {
+      const findDiscipline = await this.disciplinesRepository.findById(
+        disciplineId,
+      );
+
+      if (!findDiscipline) {
+        throw new AppError(MessagesHelper.DISCIPLINE_NOT_FOUND, 404);
+      }
+
+      disciplines.push(findDiscipline);
     }
 
     const student = await this.studentsRepository.create({
-      user: findUser,
-      teachingUnit: findUnit,
+      user: updateUser,
       course: findCourse,
-      discipline: findDiscipline,
+      school: findSchool,
+      disciplines,
     });
 
     return {
       student,
-      token,
-      refreshToken,
     };
   }
 }

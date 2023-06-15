@@ -42,6 +42,13 @@ export class UserEntity {
   email!: string;
 
   @Column({
+    name: "secondary_email",
+    type: "varchar",
+    nullable: true,
+  })
+  secondaryEmail!: string | null;
+
+  @Column({
     type: "varchar",
   })
   @Exclude()
@@ -53,6 +60,27 @@ export class UserEntity {
     nullable: true,
   })
   avatarUrl!: string | null;
+
+  @Column({
+    name: "phone",
+    type: "varchar",
+    nullable: true,
+  })
+  phone!: string | null;
+
+  @Column({
+    name: "is_whatsapp",
+    type: "boolean",
+    default: false,
+  })
+  isWhatsapp!: boolean;
+
+  @Column({
+    name: "is_phone_visible",
+    type: "boolean",
+    default: false,
+  })
+  isPhoneVisible!: boolean;
 
   @Column({
     name: "is_email_verified",

@@ -89,7 +89,7 @@ export class SendForgotPasswordEmailService {
         file: forgotPasswordTemplate,
         variables: {
           name: findUser.fullName,
-          link: `${process.env.APP_APP_URL}/reset-password?token=${resetPasswordToken}`,
+          link: `${process.env.APP_WEB_URL}/reset-password?token=${resetPasswordToken}`,
         },
       },
     });

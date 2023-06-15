@@ -1,6 +1,6 @@
 export default {
   secretToken: process.env.APP_SECRET || "default",
-  expiresInToken: "15m",
+  expiresInToken: "1d", // "15m", // 15 minutes
   secretRefreshToken: process.env.APP_REFRESH_SECRET || "default",
   expiresInRefreshToken: "30d",
   expiresInRefreshTokenDays: 30,

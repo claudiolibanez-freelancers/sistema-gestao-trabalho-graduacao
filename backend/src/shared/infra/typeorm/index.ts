@@ -2,7 +2,7 @@ import { DataSource, DataSourceOptions } from "typeorm";
 import { SeederOptions } from "typeorm-extension";
 import { join } from "node:path";
 
-import { ManagerSeeder } from "./seeds/ManagerSeeder";
+import { ManagerSeeder } from "./seeds/00-ManagerSeeder";
 
 const port = process.env.DATABASE_PORT as number | undefined;
 
@@ -47,5 +47,3 @@ const options: DataSourceOptions & SeederOptions = {
 };
 
 export const dataSource = new DataSource(options);
-
-// dataSource.initialize();

@@ -6,10 +6,10 @@ import { UpdateUserAvatarService } from "@modules/users/services/UpdateUserAvata
 
 export class UserAvatarController {
   public async update(request: Request, response: Response): Promise<Response> {
-    const updateUserAvatar = container.resolve(UpdateUserAvatarService);
-
     const avatarFilename = request.file
       ?.filename as Express.Multer.File["filename"];
+
+    const updateUserAvatar = container.resolve(UpdateUserAvatarService);
 
     const { user } = await updateUserAvatar.execute({
       id: request.user.id,

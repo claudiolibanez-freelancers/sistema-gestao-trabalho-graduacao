@@ -10,14 +10,12 @@ export class CreateCoursesTable1685809250423 implements MigrationInterface {
             name: "id",
             type: "uuid",
             isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
           },
           {
             name: "name",
             type: "varchar",
-          },
-          {
-            name: "teaching_unit_id",
-            type: "uuid",
           },
           {
             name: "created_at",
@@ -28,16 +26,6 @@ export class CreateCoursesTable1685809250423 implements MigrationInterface {
             name: "updated_at",
             type: "timestamp",
             default: "now()",
-          },
-        ],
-        foreignKeys: [
-          {
-            name: "FKTeachingUnitsCourses",
-            referencedTableName: "teaching_units",
-            referencedColumnNames: ["id"],
-            columnNames: ["teaching_unit_id"],
-            onDelete: "CASCADE",
-            onUpdate: "CASCADE",
           },
         ],
       }),

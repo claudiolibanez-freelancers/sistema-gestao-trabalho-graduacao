@@ -13,5 +13,18 @@ export const MessagesHelper = {
   PERMISSION_NOT_FOUND: "Permissão não encontrada",
   ROLE_ALREADY_EXISTS: "Perfil já existe",
   ROLE_NOT_FOUND: "Perfil não encontrado",
-  TEACHING_UNIT_ALREADY_EXISTS: "Unidade de ensino já existe",
+  SCHOOL_ALREADY_EXISTS: "Escola já existe",
+  SCHOOL_NOT_FOUND: "Escola não encontrada",
+  COURSE_ALREADY_EXISTS: "Curso já existe",
+  COURSE_NOT_FOUND: "Curso não encontrada",
+  DISCIPLINE_ALREADY_EXISTS: "Disciplina já existe",
+  DISCIPLINE_NOT_FOUND: "Disciplina não encontrada",
+  STUDENT_NOT_FOUND: "Estudante não encontrado",
+  TEACHER_NOT_FOUND: "Professor não encontrado",
+  COORDINATOR_NOT_FOUND: "Coordenador não encontrado",
+  GROUP_NOT_FOUND: "Grupo não encontrado",
+  GROUP_STUDENT_INVITE_NOT_FOUND:
+    "Convite de estudante para grupo não encontrado",
+  GROUP_TEACHER_INVITE_NOT_FOUND:
+    "Convite de professor para grupo não encontrado",
 };

@@ -7,9 +7,8 @@ export function withSSRGuest<P extends { [key: string]: any; }>(fn: GetServerSid
   return async (ctx: GetServerSidePropsContext): Promise<GetServerSidePropsResult<P>> => {
     const cookies = nookies.get(ctx);
     const token = cookies[constants.USER_TOKEN];
-    const user = cookies[constants.USER];
 
-    if (token && user) {
+    if (token) {
       return {
         redirect: {
           destination: '/dashboard',

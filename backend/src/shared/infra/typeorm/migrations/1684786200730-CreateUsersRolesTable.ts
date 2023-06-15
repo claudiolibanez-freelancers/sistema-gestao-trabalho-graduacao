@@ -12,14 +12,19 @@ export class CreateUsersRolesTable1684786200730 implements MigrationInterface {
         name: "users_roles",
         columns: [
           {
+            name: "id",
+            type: "uuid",
+            isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
             name: "user_id",
             type: "uuid",
-            isNullable: false,
           },
           {
             name: "role_id",
             type: "uuid",
-            isNullable: false,
           },
         ],
       }),

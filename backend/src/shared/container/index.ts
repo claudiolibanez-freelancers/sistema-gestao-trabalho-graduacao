@@ -27,20 +27,52 @@ import { IRolesPermissionsRepository } from "@modules/roles/repositories/IRolesP
 import { RolesPermissionsRepository } from "@modules/roles/infra/typeorm/repositories/RolesPermissionsRepository";
 
 // teaching units repositories
-import { ITeachingUnitsRepository } from "@modules/teachingUnits/repositories/ITeachingUnitsRepository";
-import { TeachingUnitsRepository } from "@modules/teachingUnits/infra/typeorm/repositories/TeachingUnitsRepository";
+import { ISchoolsRepository } from "@modules/schools/repositories/ISchoolsRepository";
+import { SchoolsRepository } from "@modules/schools/infra/typeorm/repositories/SchoolsRepository";
+
+// schools courses repositories
+import { ISchoolsCoursesRepository } from "@modules/schools/repositories/ISchoolsCoursesRepository";
+import { SchoolsCoursesRepository } from "@modules/schools/infra/typeorm/repositories/SchoolsCoursesRepository";
 
 // courses repositories
 import { ICoursesRepository } from "@modules/courses/repositories/ICoursesRepository";
 import { CoursesRepository } from "@modules/courses/infra/typeorm/repositories/CoursesRepository";
 
+// couses disciplines repositories
+import { ICoursesDisciplinesRepository } from "@modules/courses/repositories/ICoursesDisciplinesRepository";
+import { CoursesDisciplinesRepository } from "@modules/courses/infra/typeorm/repositories/CoursesDisciplinesRepository";
+
 // disciplines repositories
 import { IDisciplinesRepository } from "@modules/disciplines/repositories/IDisciplinesRepository";
 import { DisciplinesRepository } from "@modules/disciplines/infra/typeorm/repositories/DisciplinesRepository";
 
-// disciplines repositories
+// students repositories
 import { IStudentsRepository } from "@modules/students/repositories/IStudentsRepository";
 import { StudentsRepository } from "@modules/students/infra/typeorm/repositories/StudentsRepository";
+
+// teachers repositories
+import { ITeachersRepository } from "@modules/teachers/repositories/ITeachersRepository";
+import { TeachersRepository } from "@modules/teachers/infra/typeorm/repositories/TeachersRepository";
+
+// coordinators repositories
+import { ICoordinatorsRepository } from "@modules/coordinators/repositories/ICoordinatorsRepository";
+import { CoordinatorsRepository } from "@modules/coordinators/infra/typeorm/repositories/CoordinatorsRepository";
+
+// groups repositories
+import { IGroupsRepository } from "@modules/groups/repositories/IGroupsRepository";
+import { GroupsRepository } from "@modules/groups/infra/typeorm/repositories/GroupsRepository";
+
+// group student invites repositories
+import { IGroupStudentInvitesRepository } from "@modules/groups/repositories/IGroupStudentInvitesRepository";
+import { GroupStudentInvitesRepository } from "@modules/groups/infra/typeorm/repositories/GroupStudentInvitesRepository";
+
+// group teacher invites repositories
+import { IGroupTeacherInvitesRepository } from "@modules/groups/repositories/IGroupTeacherInvitesRepository";
+import { GroupTeacherInvitesRepository } from "@modules/groups/infra/typeorm/repositories/GroupTeacherInvitesRepository";
+
+// justifications repositories
+import { IJustificationsRepository } from "@modules/groups/repositories/IJustificationsRepository";
+import { JustificationsRepository } from "@modules/groups/infra/typeorm/repositories/JustificationsRepository";
 
 // users register
 container.registerSingleton<IUsersRepository>(
@@ -66,22 +98,34 @@ container.registerSingleton<IRolesRepository>(
   RolesRepository,
 );
 
-// roles register
+// roles permissions register
 container.registerSingleton<IRolesPermissionsRepository>(
   "RolesPermissionsRepository",
   RolesPermissionsRepository,
 );
 
 // teaching units register
-container.registerSingleton<ITeachingUnitsRepository>(
-  "TeachingUnitsRepository",
-  TeachingUnitsRepository,
+container.registerSingleton<ISchoolsRepository>(
+  "SchoolsRepository",
+  SchoolsRepository,
+);
+
+// schools courses register
+container.registerSingleton<ISchoolsCoursesRepository>(
+  "SchoolsCoursesRepository",
+  SchoolsCoursesRepository,
 );
 
 // courses register
 container.registerSingleton<ICoursesRepository>(
   "CoursesRepository",
   CoursesRepository,
+);
+
+// courses disciplines register
+container.registerSingleton<ICoursesDisciplinesRepository>(
+  "CoursesDisciplinesRepository",
+  CoursesDisciplinesRepository,
 );
 
 // disciplines register
@@ -94,4 +138,40 @@ container.registerSingleton<IDisciplinesRepository>(
 container.registerSingleton<IStudentsRepository>(
   "StudentsRepository",
   StudentsRepository,
+);
+
+// teachers register
+container.registerSingleton<ITeachersRepository>(
+  "TeachersRepository",
+  TeachersRepository,
+);
+
+// coordinators register
+container.registerSingleton<ICoordinatorsRepository>(
+  "CoordinatorsRepository",
+  CoordinatorsRepository,
+);
+
+// groups register
+container.registerSingleton<IGroupsRepository>(
+  "GroupsRepository",
+  GroupsRepository,
+);
+
+// group student invites register
+container.registerSingleton<IGroupStudentInvitesRepository>(
+  "GroupStudentInvitesRepository",
+  GroupStudentInvitesRepository,
+);
+
+// group teacher invites register
+container.registerSingleton<IGroupTeacherInvitesRepository>(
+  "GroupTeacherInvitesRepository",
+  GroupTeacherInvitesRepository,
+);
+
+// justifications register
+container.registerSingleton<IJustificationsRepository>(
+  "JustificationsRepository",
+  JustificationsRepository,
 );

@@ -14,14 +14,19 @@ export class CreateRolesPermissionsTable1684797420419
         name: "roles_permissions",
         columns: [
           {
-            name: "role_id",
+            name: "id",
             type: "uuid",
             isPrimary: true,
+            generationStrategy: "uuid",
+            default: "uuid_generate_v4()",
+          },
+          {
+            name: "role_id",
+            type: "uuid",
           },
           {
             name: "permission_id",
             type: "uuid",
-            isPrimary: true,
           },
         ],
       }),

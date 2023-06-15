@@ -1,5 +1,5 @@
 .container {
-  @apply flex flex-col p-6 gap-6;
+  @apply flex flex-col bg-gray-200 rounded p-6 gap-6;
 }
 
 .header {

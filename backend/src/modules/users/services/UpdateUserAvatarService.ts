@@ -58,10 +58,10 @@ export class UpdateUserAvatarService {
 
     findUser.avatarUrl = fileName;
 
-    await this.usersRepository.update(findUser);
+    const updatedUser = await this.usersRepository.update(findUser);
 
     return {
-      user: findUser,
+      user: updatedUser,
     };
   }
 }

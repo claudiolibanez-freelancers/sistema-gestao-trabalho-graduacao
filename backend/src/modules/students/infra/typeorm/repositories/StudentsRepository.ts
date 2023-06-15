@@ -19,11 +19,65 @@ export class StudentsRepository implements IStudentsRepository {
     this.repository = dataSource.getRepository(StudentEntity);
   }
 
-  public async create(data: ICreateStudentDTO): Promise<StudentEntity> {
-    const student = this.repository.create(data);
+  public async create({
+    user,
+    school,
+    course,
+    disciplines,
+  }: ICreateStudentDTO): Promise<StudentEntity> {
+    const student = this.repository.create({
+      user,
+      school,
+      course,
+      disciplines,
+    });
 
     await this.repository.save(student);
 
     return student;
+  }
+
+  public async findByUserId(id: string): Promise<StudentEntity | null> {
+    const student = await this.repository.findOne({
+      where: {
+        userId: id,
+      },
+      relations: [
+        "user",
+        "school",
+        "course",
+        "disciplines",
+        "groupStudentInvites",
+        "groupStudentInvites.student",
+        "groupStudentInvites.group",
+        "groups",
+      ],
+    });
+
+    return student;
+  }
+
+  public async findByEmail(email: string): Promise<StudentEntity | null> {
+    const student = await this.repository.findOne({
+      where: {
+        user: {
+          email,
+        },
+      },
+      relations: [
+        "school",
+        "course",
+        "disciplines",
+        "groupStudentInvites",
+        "groups",
+        "user",
+      ],
+    });
+
+    return student;
+  }
+
+  public async update(student: StudentEntity): Promise<StudentEntity> {
+    return this.repository.save(student);
   }
 }

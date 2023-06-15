@@ -10,11 +10,18 @@ export class SessionsController {
 
     const authenticateUser = container.resolve(AuthenticateUserService);
 
-    const { user, token, refreshToken } = await authenticateUser.execute({
-      email,
-      password,
-    });
+    const { user, profileType, profile, token, refreshToken } =
+      await authenticateUser.execute({
+        email,
+        password,
+      });
 
-    return res.json({ user: instanceToPlain(user), token, refreshToken });
+    return res.json({
+      user: instanceToPlain(user),
+      profileType,
+      profile: instanceToPlain(profile),
+      token,
+      refreshToken,
+    });
   }
 }

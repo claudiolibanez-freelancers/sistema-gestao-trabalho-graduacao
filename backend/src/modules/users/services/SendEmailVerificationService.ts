@@ -44,8 +44,6 @@ export class SendEmailVerificationService {
   ) {}
 
   public async execute({ email }: IRequest) {
-    console.log(email);
-
     const findUser = await this.usersRepository.findByEmail(email);
 
     if (!findUser || !findUser.id) {
@@ -96,7 +94,7 @@ export class SendEmailVerificationService {
         file: confirmEmailTemplate,
         variables: {
           name: findUser.fullName,
-          link: `${process.env.APP_APP_URL}/confirm?email=${findUser.email}&token=${confirmEmailToken}`,
+          link: `${process.env.APP_WEB_URL}/confirm?email=${findUser.email}&token=${confirmEmailToken}`,
         },
       },
     });

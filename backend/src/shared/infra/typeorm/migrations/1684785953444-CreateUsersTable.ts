@@ -31,6 +31,12 @@ export class CreateUsersTable1684785953444 implements MigrationInterface {
             isUnique: true,
           },
           {
+            name: "secondary_email",
+            type: "varchar",
+            isNullable: true,
+            default: null,
+          },
+          {
             name: "password",
             type: "varchar",
           },
@@ -39,6 +45,22 @@ export class CreateUsersTable1684785953444 implements MigrationInterface {
             type: "varchar",
             isNullable: true,
             default: null,
+          },
+          {
+            name: "phone",
+            type: "varchar",
+            isNullable: true,
+            default: null,
+          },
+          {
+            name: "is_whatsapp",
+            type: "boolean",
+            default: false,
+          },
+          {
+            name: "is_phone_visible",
+            type: "boolean",
+            default: false,
           },
           {
             name: "is_email_verified",

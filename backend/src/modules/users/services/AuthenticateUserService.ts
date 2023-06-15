@@ -19,9 +19,15 @@ import { IDateProvider } from "@shared/container/providers/DateProvider/models/I
 // repositories
 import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
 import { IUserTokensRepository } from "@modules/users/repositories/IUserTokensRepository";
+import { IStudentsRepository } from "@modules/students/repositories/IStudentsRepository";
+import { ITeachersRepository } from "@modules/teachers/repositories/ITeachersRepository";
+import { ICoordinatorsRepository } from "@modules/coordinators/repositories/ICoordinatorsRepository";
 
 // entities
 import { UserEntity } from "@modules/users/infra/typeorm/entities/UserEntity";
+import { StudentEntity } from "@modules/students/infra/typeorm/entities/StudentEntity";
+import { TeacherEntity } from "@modules/teachers/infra/typeorm/entities/TeacherEntity";
+import { CoordinatorEntity } from "@modules/coordinators/infra/typeorm/entities/CoordinatorEntity";
 
 interface IRequest {
   email: string;
@@ -30,6 +36,8 @@ interface IRequest {
 
 interface IResponse {
   user: UserEntity;
+  profileType?: "student" | "teacher" | "coordinator";
+  profile?: StudentEntity | TeacherEntity | CoordinatorEntity;
   token: string;
   refreshToken: string;
 }
@@ -52,6 +60,18 @@ export class AuthenticateUserService {
     // @ts-ignore
     @inject("DayjsDateProvider")
     private dateProvider: IDateProvider,
+
+    // @ts-ignore
+    @inject("StudentsRepository")
+    private studentsRepository: IStudentsRepository,
+
+    // @ts-ignore
+    @inject("TeachersRepository")
+    private teachersRepository: ITeachersRepository,
+
+    // @ts-ignore
+    @inject("CoordinatorsRepository")
+    private coordinatorsRepository: ICoordinatorsRepository,
   ) {}
 
   public async execute({ email, password }: IRequest): Promise<IResponse> {
@@ -85,6 +105,45 @@ export class AuthenticateUserService {
 
     const rolesNames = user.roles.map((role) => role.name);
 
+    let profileType: "student" | "teacher" | "coordinator" | undefined =
+      undefined;
+    let profile: StudentEntity | TeacherEntity | CoordinatorEntity | undefined =
+      undefined;
+
+    if (rolesNames.includes("student")) {
+      profileType = "student";
+
+      const student = await this.studentsRepository.findByUserId(user.id);
+
+      if (!student) {
+        throw new AppError(MessagesHelper.STUDENT_NOT_FOUND, 404);
+      }
+
+      profile = student;
+    } else if (rolesNames.includes("teacher")) {
+      profileType = "teacher";
+
+      const teacher = await this.teachersRepository.findByUserId(user.id);
+
+      if (!teacher) {
+        throw new AppError(MessagesHelper.TEACHER_NOT_FOUND, 404);
+      }
+
+      profile = teacher;
+    } else if (rolesNames.includes("coordinator")) {
+      profileType = "coordinator";
+
+      const coordinator = await this.coordinatorsRepository.findByUserId(
+        user.id,
+      );
+
+      if (!coordinator) {
+        throw new AppError(MessagesHelper.COORDINATOR_NOT_FOUND, 404);
+      }
+
+      profile = coordinator;
+    }
+
     const token = sign(
       {
         roles: rolesNames,
@@ -112,6 +171,12 @@ export class AuthenticateUserService {
       tokenType: "refresh_token",
     });
 
-    return { user, token, refreshToken };
+    return {
+      user,
+      profileType,
+      profile,
+      token,
+      refreshToken,
+    };
   }
 }

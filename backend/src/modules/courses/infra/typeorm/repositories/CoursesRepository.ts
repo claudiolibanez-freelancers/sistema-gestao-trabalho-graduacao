@@ -8,6 +8,7 @@ import { ICoursesRepository } from "@modules/courses/repositories/ICoursesReposi
 
 // entities
 import { CourseEntity } from "@modules/courses/infra/typeorm/entities/CourseEntity";
+import { ICreateCourseDTO } from "@modules/courses/dtos/ICreateCourseDTO";
 
 export class CoursesRepository implements ICoursesRepository {
   private repository: Repository<CourseEntity>;
@@ -51,5 +52,23 @@ export class CoursesRepository implements ICoursesRepository {
     });
 
     return courses;
+  }
+
+  public async create(data: ICreateCourseDTO): Promise<CourseEntity> {
+    const course = this.repository.create(data);
+
+    await this.repository.save(course);
+
+    return course;
+  }
+
+  public async update(course: CourseEntity): Promise<CourseEntity> {
+    await this.repository.save(course);
+
+    return course;
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
   }
 }

@@ -1,30 +1,63 @@
 .container {
-  @apply flex flex-col h-screen;
+  @apply flex flex-col justify-center items-center;
 }
 
 .content {
-  @apply flex flex-1 justify-center items-start;
+  @apply flex w-full justify-center items-center;
 }
 
-.calendar {
-  /* @apply relative max-w-full w-[540px] grid grid-cols-1; */
-  position: relative;
-  max-width: 100%;
-  width: 540px;
-  grid-template-columns: 1fr;
+.calendarStep {
+  @apply flex w-full rounded border border-[#fdfafa40] shadow-lg shadow-[#fdfafa40] bg-gray-200;
 }
 
 .open {
-  grid-template-columns: 1fr 280px;
+  @apply max-w-[850px];
 }
 
 .close {
-  width: 540px;
-  grid-template-columns: 1fr;
+  @apply max-w-[540px];
 }
 
-@media (max-width: 900px) {
-  .open {
-    grid-template-columns: 1fr;
-  }
+.calendarContainer {
+  @apply w-[540px];
+}
+
+.timePickerContainer {
+  @apply w-[310px] bg-gray-200;
+}
+
+.timePicker {
+  @apply w-full border-l border-[#fdfafa40] px-3 pt-6;
+}
+
+.timePickerHeader {
+  @apply text-lg text-gray-700 font-medium;
+}
+
+.timePickerList {
+  @apply flex flex-1 flex-col mt-4 gap-2 overflow-scroll max-h-[420px];
+}
+
+.timePickerItem {
+  @apply w-full border border-gray-400 shadow rounded p-2 cursor-pointer transition-all duration-300 ease-in-out;
+}
+
+.card {
+  @apply w-[700px] bg-slate-50 m-2.5 rounded;
+}
+
+.cardHeader {
+  @apply w-full p-4 bg-gray-200 border-b border-b-gray-300 rounded-t;
+}
+
+.title {
+  @apply text-2xl text-gray-700 font-medium;
+}
+
+.cardBody {
+  @apply flex flex-col p-4 gap-4;
+}
+
+.formControl {
+  @apply flex flex-col gap-1;
 }

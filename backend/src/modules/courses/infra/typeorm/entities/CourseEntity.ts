@@ -2,16 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Exclude } from "class-transformer";
 import { v4 as uuidV4 } from "uuid";
-import { TeachingUnitEntity } from "@modules/teachingUnits/infra/typeorm/entities/TeachingUnitEntity";
+
+// entities
+import { SchoolEntity } from "@modules/schools/infra/typeorm/entities/SchoolEntity";
 import { DisciplineEntity } from "@modules/disciplines/infra/typeorm/entities/DisciplineEntity";
 
 @Entity({ name: "courses" })
@@ -26,16 +26,8 @@ export class CourseEntity {
   })
   name!: string;
 
-  @Column({
-    name: "teaching_unit_id",
-    type: "uuid",
-    nullable: false,
-  })
-  teachingUnitId?: string;
-
-  @ManyToOne(() => TeachingUnitEntity)
-  @JoinColumn({ name: "teaching_unit_id" })
-  teachingUnit?: TeachingUnitEntity;
+  @ManyToMany(() => SchoolEntity, (schools) => schools.courses)
+  schools!: SchoolEntity[];
 
   @ManyToMany(() => DisciplineEntity, (discipline) => discipline.courses, {
     onDelete: "CASCADE",

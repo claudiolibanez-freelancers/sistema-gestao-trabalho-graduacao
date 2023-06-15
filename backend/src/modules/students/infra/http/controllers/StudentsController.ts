@@ -11,30 +11,32 @@ export class StudentsController {
       fullName,
       displayName,
       email,
-      secundaryEmail,
-      unitId,
+      secondaryEmail,
+      schoolId,
       courseId,
-      disciplineId,
+      disciplineIds,
       phone,
+      isWhatsapp,
+      isPhoneVisible,
     } = request.body;
 
     const createStudent = container.resolve(CreateStudentService);
 
-    const { student, token, refreshToken } = await createStudent.execute({
+    const { student } = await createStudent.execute({
       fullName,
       displayName,
       email,
-      secundaryEmail,
-      unitId,
+      secondaryEmail,
+      schoolId,
       courseId,
-      disciplineId,
+      disciplineIds,
       phone,
+      isWhatsapp,
+      isPhoneVisible,
     });
 
-    return response.json({
+    return response.status(201).json({
       student: instanceToPlain(student),
-      token,
-      refreshToken,
     });
   }
 }
