@@ -32,10 +32,8 @@ const registerGroupFormSchema = z.object({
     .nonempty({ message: 'Tema obrigatório' }),
   justification1: z.string()
     .nonempty({ message: 'Justificativa obrigatória' }),
-  justification2: z.string()
-    .nonempty({ message: 'Justificativa obrigatória' }),
-  justification3: z.string()
-    .nonempty({ message: 'Justificativa obrigatória' }),
+  justification2: z.string(),
+  justification3: z.string(),
   justification4: z.string(),
   justification5: z.string(),
   summary: z.string()

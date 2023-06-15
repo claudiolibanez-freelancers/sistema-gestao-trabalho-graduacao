@@ -1,9 +1,9 @@
-.container {
-  @apply flex w-full flex-col justify-center items-center gap-4;
+.wrapper {
+  @apply flex flex-1 flex-col justify-center items-center gap-4;
 }
 
-.content {
-  @apply flex w-full justify-between items-center gap-2;
+.headerContainer {
+  @apply flex w-full justify-between items-center gap-4;
 }
 
 .header {
@@ -17,6 +17,16 @@
 .subtitle {
   @apply text-gray-700;
 }
+
+.empty,
+.actions {
+  @apply w-32;
+}
+
+.divider {
+  @apply border-gray-300;
+}
+
 
 .teachersList {
   @apply flex flex-col w-full gap-2;

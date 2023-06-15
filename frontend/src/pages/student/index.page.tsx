@@ -9,7 +9,12 @@ import nookies from 'nookies';
 
 import constants from "@/constants";
 
+import { School } from "@/types";
+
 import { withSSRAuth } from "@/utils/withSSRAuth";
+
+import { api } from "@/services/apiClient";
+import { setupAPIClient } from "@/services/api";
 
 import { Navbar } from "@/components/common/Navbar";
 import { TextInput } from "@/components/common/TextInput";
@@ -18,16 +23,13 @@ import { Checkbox } from "@/components/common/Checkbox";
 import { Button } from "@/components/common/Button";
 
 import styles from './styles.module.css';
-import { setupAPIClient } from "@/services/api";
-import { api } from "@/services/apiClient";
 
 const studentSchema = z.object({
   fullName: z.string()
     .nonempty('Informe seu nome completo'),
   displayName: z.string()
     .nonempty('Informe seu username'),
-  secondaryEmail: z.string()
-    .email('Informe um e-mail válido'),
+  secondaryEmail: z.string(),
   schoolId: z.string()
     .nonempty('Selecione uma unidade de ensino'),
   courseId: z.string()
@@ -40,26 +42,6 @@ const studentSchema = z.object({
 });
 
 type StudentFormData = z.infer<typeof studentSchema>;
-
-type Discipline = {
-  id: string;
-  name: string;
-  createdAt: string;
-}
-
-type Course = {
-  id: string;
-  name: string;
-  disciplines: Discipline[];
-  createdAt: string;
-}
-
-type School = {
-  id: string;
-  name: string;
-  courses: Course[];
-  createdAt: string;
-}
 
 type StudentPageProps = {
   email: string;

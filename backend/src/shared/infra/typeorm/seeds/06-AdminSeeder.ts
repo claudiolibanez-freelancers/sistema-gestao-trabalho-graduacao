@@ -5,6 +5,8 @@ import { hash } from "bcryptjs";
 // entities
 import { UserEntity } from "@modules/users/infra/typeorm/entities/UserEntity";
 import { RoleEntity } from "@modules/roles/infra/typeorm/entities/RoleEntity";
+import { CoordinatorEntity } from "@modules/coordinators/infra/typeorm/entities/CoordinatorEntity";
+import { SchoolEntity } from "@modules/schools/infra/typeorm/entities/SchoolEntity";
 
 export class AdminSeeder implements Seeder {
   public async run(
@@ -13,6 +15,8 @@ export class AdminSeeder implements Seeder {
   ): Promise<void> {
     const usersRepository = dataSource.getRepository(UserEntity);
     const rolesRes = dataSource.getRepository(RoleEntity);
+    const coordinatorsRepository = dataSource.getRepository(CoordinatorEntity);
+    const schoolsRepository = dataSource.getRepository(SchoolEntity);
 
     const roles: RoleEntity[] = [];
 
@@ -57,5 +61,16 @@ export class AdminSeeder implements Seeder {
     const newUser = usersRepository.create(userData);
 
     await usersRepository.save(newUser);
+
+    const findSchool = await schoolsRepository.findOne({
+      where: { name: "FATEC - Arthur de Azevedo" },
+    });
+
+    const coordinator = coordinatorsRepository.create({
+      user: newUser!,
+      school: findSchool!,
+    });
+
+    await coordinatorsRepository.save(coordinator);
   }
 }

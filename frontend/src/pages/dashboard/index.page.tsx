@@ -12,7 +12,7 @@ import { withSSRAuth } from "@/utils/withSSRAuth";
 
 import { setupAPIClient } from "@/services/api";
 
-import { Group, Invite, Profile } from "@/types";
+import { Group, Invite, Profile, Teacher } from "@/types";
 
 import { Navbar } from "@/components/common/Navbar";
 import { Button } from "@/components/common/Button";
@@ -26,15 +26,20 @@ type DashboardPageProps = {
   email: string,
   profileType: string,
   profile: Profile;
+  teachers?: Teacher[];
 };
 
 export default function DashboardPage({
   email,
   profileType,
   profile,
+  teachers,
 }: DashboardPageProps) {
   const [groups, setGroups] = useState<Group[]>(profile.groups);
   const [invites, setInvites] = useState<Invite[]>(profile.invites);
+
+  const [teachersList, setTeachersList] = useState<Teacher[] | undefined>(teachers);
+
 
   const { pathname, push } = useRouter();
 
@@ -54,7 +59,7 @@ export default function DashboardPage({
     push('/schedule');
   }
 
-  const handleGroupStudentAccept = async (
+  const handleStudentAccept = async (
     id: string,
   ) => {
     try {
@@ -79,11 +84,60 @@ export default function DashboardPage({
     }
   }
 
-  const handleGroupStudentDecline = async (
+  const handleStudentDecline = async (
     id: string,
   ) => {
     try {
       await api.post(`/groups/students/${id}/decline`);
+
+      const cookies = parseCookies();
+      const token = cookies[constants.USER_TOKEN];
+
+      const response = await api.get("/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const { profile: { groups: groupStudents, invites: groupInvites } } = response.data;
+
+      setGroups(groupStudents);
+      setInvites(groupInvites);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleTeacherAccept = async (
+    id: string,
+  ) => {
+    try {
+      await api.post(`/groups/teachers/${id}/invite`);
+
+      const cookies = parseCookies();
+      const token = cookies[constants.USER_TOKEN];
+
+      const response = await api.get("/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const { profile: { groups: groupStudents, invites: groupInvites } } = response.data;
+
+      setGroups(groupStudents);
+      setInvites(groupInvites);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const handleTeacherDecline = async (
+    id: string,
+  ) => {
+    try {
+      await api.post(`/groups/teachers/${id}/decline`);
 
       const cookies = parseCookies();
       const token = cookies[constants.USER_TOKEN];
@@ -111,17 +165,25 @@ export default function DashboardPage({
       />
       <main className={styles.container}>
         <div className={styles.content}>
-          {/* {profileType === 'coordinator' && (
+          {profileType === 'coordinator' && (
             <CoordinationPanel
-              teachers={teachers}
+              teachers={teachersList}
             />
-          )} */}
+          )}
+          {profileType === 'teacher' && (
+            <TeacherPanel
+              groups={groups}
+              invites={invites}
+              onAccept={handleTeacherAccept}
+              onDecline={handleTeacherDecline}
+            />
+          )}
           {profileType === 'student' && (
             <StudentPanel
               group={groups[0]}
               invites={invites}
-              onAccept={handleGroupStudentAccept}
-              onDecline={handleGroupStudentDecline}
+              onAccept={handleStudentAccept}
+              onDecline={handleStudentDecline}
             />
           )}
           {/* <div className={styles.card}>
@@ -254,8 +316,25 @@ export const getServerSideProps: GetServerSideProps = withSSRAuth<DashboardPageP
     }
   }
 
+
+
   nookies.set(undefined, constants.USER_PROFILE_TYPE, profileType);
   nookies.set(undefined, constants.USER_PROFILE, JSON.stringify(profile));
+
+  if (profileType === "coordinator") {
+    const teachersResponse = await api.get("/teachers");
+
+    const { teachers } = teachersResponse.data;
+
+    return {
+      props: {
+        email,
+        profileType,
+        profile,
+        teachers,
+      }
+    }
+  }
 
   return {
     props: {

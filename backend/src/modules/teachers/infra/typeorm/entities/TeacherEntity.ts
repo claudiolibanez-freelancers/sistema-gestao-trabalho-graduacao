@@ -46,41 +46,6 @@ export class TeacherEntity {
   @JoinColumn({ name: "school_id" })
   school!: SchoolEntity;
 
-  // @ManyToMany(() => GroupTeacherEntity, (groupTeacher) => groupTeacher.teachers)
-  // @JoinTable({
-  //   name: "groups_teachers",
-  //   joinColumns: [{ name: "teacher_id", referencedColumnName: "id" }],
-  //   inverseJoinColumns: [{ name: "group_id", referencedColumnName: "id" }],
-  // })
-  // @Expose({ name: "group" })
-  // groupTeacher?: GroupTeacherEntity;
-
-  // @ManyToMany(
-  //   () => GroupTeacherEntity,
-  //   (groupTeacher) => groupTeacher.teachers,
-  //   {
-  //     onDelete: "CASCADE",
-  //   },
-  // )
-  // @JoinTable({
-  //   name: "groups_teachers",
-  //   joinColumns: [{ name: "teacher_id", referencedColumnName: "id" }],
-  //   inverseJoinColumns: [{ name: "group_id", referencedColumnName: "id" }],
-  // })
-  // // @Expose({ name: "groups" })
-  // groupTeachers?: GroupTeacherEntity[];
-
-  // @ManyToMany(() => GroupEntity, (group) => group.teachers, {
-  //   onDelete: "CASCADE",
-  // })
-  // @JoinTable({
-  //   name: "teachers_groups",
-  //   joinColumns: [{ name: "teacher_id", referencedColumnName: "id" }],
-  //   inverseJoinColumns: [{ name: "group_id", referencedColumnName: "id" }],
-  // })
-  // @Expose({ name: "groups" })
-  // groups?: GroupEntity[];
-
   @OneToMany(
     () => GroupTeacherInviteEntity,
     (groupTeacherInvite) => groupTeacherInvite.teacher,

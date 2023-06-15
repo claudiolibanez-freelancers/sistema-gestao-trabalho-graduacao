@@ -1,112 +1,89 @@
-import styles from './styles.module.css';
+import { useRouter } from 'next/navigation';
+
+import { Group, Invite } from '@/types';
 
 import { Card } from "@/components/common/Card";
+import { Button } from '@/components/common/Button';
+
+import styles from './styles.module.css';
 
 type TeacherPanelProps = {
-  groupsList: any[];
+  groups: Group[];
+  invites: Invite[];
+  onAccept: (id: string) => Promise<void>;
+  onDecline: (id: string) => Promise<void>;
 };
 
-export function TeacherPanel({ groupsList }: TeacherPanelProps) {
+export function TeacherPanel({ groups, invites, onAccept, onDecline }: TeacherPanelProps) {
+  const { push } = useRouter();
+
+  const handleNavigateToSchedule = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    event.preventDefault();
+
+    push("/schedule");
+  }
+
   return (
     <Card>
       <div className={styles.wrapper}>
-        <div className={styles.header}>
-          <h2 className={styles.heading}>
-            Seus Grupos
-          </h2>
-          {!groupsList.length && (
-            <span className={styles.subtitle}>
-              Você ainda não está em um grupo
-            </span>
-          )}
-        </div>
-        {/* <div className="flex w-full justify-between items-center border rounded p-4">
-          <div className="flex flex-col w-full">
-            <h3 className="text-lg font-semibold">
-              Sistema de Gestão de Trabalho de Graduação
-            </h3>
-            <span className="text-sm text-gray-700">
-              Resumo
-            </span>
-          </div>
-          <div className="flex gap-2">
-            {acceptGroup && (
-              <>
-                <div>
-                  <Button
-                    variant='outlineVariant'
-                  >
-                    Ver
-                  </Button>
-                </div>
-                <div>
-                  <Button
-                    variant='outlineVariant'
-                    onClick={handleNavigateToSchedule}
-                  >
-                    Agendar
-                  </Button>
-                </div>
-              </>
-            )}
-            {(!acceptGroup && schedule.length === 0) && (
-              <>
-                <div>
-                  <Button
-                    variant='outlineVariant'
-                    onClick={handleAcceptGroup}
-                  >
-                    Aceitar
-                  </Button>
-                </div>
-                <div>
-                  <Button
-                    variant='cancel'
-                  >
-                    Recusar
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        </div> */}
-
-        {/* {schedule.length > 0 && (
-          <div className='flex flex-1 flex-col justify-center items-center gap-2'>
-            <h2 className='text-2xl text-gray-700 font-medium'>
-              Seus agendamentos
+        <div className={styles.headerContainer}>
+          <div className={styles.empty} />
+          <div className={styles.header}>
+            <h2 className={styles.heading}>
+              Seus Grupos
             </h2>
-          </div>
-        )} */}
-
-        {/* {schedule.length > 0 && (
-          <div className="flex w-full justify-between items-center border rounded p-4">
-            <div className="flex flex-col w-full">
-              <h3 className="text-lg font-semibold">
-                {schedule[0].grupo}
-              </h3>
-              <span className="text-sm text-gray-700">
-                {schedule[0].data}
+            {!groups.length && (
+              <span className={styles.subtitle}>
+                Você ainda não está em um grupo
               </span>
+            )}
+          </div>
+          <div className={styles.empty} />
+        </div>
+        <div className='flex flex-col w-full gap-2'>
+          {groups.length > 0 && groups.map(item => (
+            <div key={item.id} className={styles.card}>
+              <div className={styles.cardInfo}>
+                <h3 className={styles.groupTheme}>{item.theme}</h3>
+                <small className={styles.groupSummary}>{item.summary}</small>
+              </div>
+
+              <div className={styles.buttonActions}>
+                <Button
+                  variant='success'
+                  onClick={handleNavigateToSchedule}
+                >
+                  Agendar
+                </Button>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <div>
-                <Button
-                  variant='outlineVariant'
-                >
-                  Ver
-                </Button>
-              </div>
-              <div>
-                <Button
-                  variant='cancel'
-                >
-                  Deletar
-                </Button>
-              </div>
+          ))}
+        </div>
+        {invites.map(item => (
+          <div key={item.id} className={styles.card}>
+            <div className={styles.cardInfo}>
+              <h3 className={styles.groupTheme}>{item.group.theme}</h3>
+              <small className={styles.groupSummary}>{item.group.summary}</small>
+            </div>
+
+            <div className={styles.buttonInvitesActions}>
+              <Button
+                variant='success'
+                onClick={() => onAccept(item.id)}
+              >
+                Aceitar
+              </Button>
+              <Button
+                variant='cancel'
+                onClick={() => onDecline(item.id)}
+              >
+                Recusar
+              </Button>
             </div>
           </div>
-        )} */}
+        ))}
       </div>
     </Card>
   );

@@ -25,7 +25,13 @@ export class TeachersRepository implements ITeachersRepository {
       where: {
         id,
       },
-      relations: ["user", "school", "groupTeacherInvites", "groups"],
+      relations: [
+        "user",
+        "school",
+        "groupTeacherInvites",
+        "groupTeacherInvites.group",
+        "groups",
+      ],
     });
 
     return teacher;
@@ -36,7 +42,13 @@ export class TeachersRepository implements ITeachersRepository {
       where: {
         userId: id,
       },
-      relations: ["user", "school", "groupTeacherInvites", "groups"],
+      relations: [
+        "user",
+        "school",
+        "groupTeacherInvites",
+        "groupTeacherInvites.group",
+        "groups",
+      ],
     });
 
     return teacher;

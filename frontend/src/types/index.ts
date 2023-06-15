@@ -49,24 +49,6 @@ export type User = {
   createdAt: string;
 };
 
-export type Discipline = {
-  id: string;
-  name: string;
-  createdAt: string;
-};
-
-export type Course = {
-  id: string;
-  name: string;
-  createdAt: string;
-};
-
-export type School = {
-  id: string;
-  name: string;
-  createdAt: string;
-};
-
 export type Profile = {
   id: string;
   user: User;
@@ -87,5 +69,28 @@ export type Teacher = {
   userId: string;
   user: User;
   schoolId: string;
+  createdAt: string;
+  isActive?: boolean;
+  groups: Group[];
+}
+
+
+export type Discipline = {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+export type Course = {
+  id: string;
+  name: string;
+  disciplines: Discipline[];
+  createdAt: string;
+}
+
+export type School = {
+  id: string;
+  name: string;
+  courses: Course[];
   createdAt: string;
 }

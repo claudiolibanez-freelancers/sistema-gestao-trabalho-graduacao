@@ -5,6 +5,7 @@ import { instanceToPlain } from "class-transformer";
 // services
 import { ListTeachersService } from "@modules/teachers/services/ListTeachersService";
 import { CreateTeacherService } from "@modules/teachers/services/CreateTeacherService";
+import { ShowTeacherService } from "@modules/teachers/services/ShowTeacherService";
 
 export class TeachersController {
   public async index(request: Request, response: Response): Promise<Response> {
@@ -30,6 +31,20 @@ export class TeachersController {
     });
 
     return response.status(201).json({
+      teacher: instanceToPlain(teacher),
+    });
+  }
+
+  public async show(request: Request, response: Response): Promise<Response> {
+    const { id } = request.params as {
+      id: string;
+    };
+
+    const showTeacher = container.resolve(ShowTeacherService);
+
+    const { teacher } = await showTeacher.execute({ id });
+
+    return response.status(200).json({
       teacher: instanceToPlain(teacher),
     });
   }

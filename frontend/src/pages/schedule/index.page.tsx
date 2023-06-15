@@ -12,6 +12,8 @@ import { Button } from "@/components/common/Button";
 import { useRouter } from "next/router";
 import { Select } from "@/components/common/Select";
 import nookies, { parseCookies } from "nookies";
+import { GetServerSideProps } from "next";
+import { withSSRAuth } from "@/utils/withSSRAuth";
 
 const hours = [
   "08:00h",
@@ -35,6 +37,8 @@ const scheduleFormSchema = z.object({
 });
 
 type ScheduleFormData = z.infer<typeof scheduleFormSchema>;
+
+type SchedulePageProps = {};
 
 export default function SchedulePage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -187,3 +191,10 @@ export default function SchedulePage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = withSSRAuth<SchedulePageProps>(async (ctx) => {
+  return {
+    props: {}
+  }
+});

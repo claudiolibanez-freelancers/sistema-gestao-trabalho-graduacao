@@ -151,7 +151,7 @@ export default function RegisterPage() {
 
           <div className={styles.buttonContainer}>
             <Button onClick={handleSignUp}>
-              Entrar
+              Criar
             </Button>
           </div>
         </div>

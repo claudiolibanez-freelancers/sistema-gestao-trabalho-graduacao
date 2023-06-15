@@ -1,18 +1,20 @@
+import { useState } from 'react';
+
 import { useRouter } from 'next/router';
 import nookies, { parseCookies } from 'nookies';
+
+import { Teacher } from '@/types';
 
 import { Card } from "@/components/common/Card";
 import { Button } from "@/components/common/Button";
 
 import styles from './styles.module.css';
-import { useState } from 'react';
 
 type CoordinationPanelProps = {
-  teachers: any[];
+  teachers?: Teacher[];
 };
 
 export function CoordinationPanel({ teachers }: CoordinationPanelProps) {
-  const [teachersList, setTeacherList] = useState<any[]>(teachers);
   const { push } = useRouter();
 
   const handleNavigateToCreateTeacher = (
@@ -23,130 +25,78 @@ export function CoordinationPanel({ teachers }: CoordinationPanelProps) {
     push('/teacher');
   }
 
-  const handleDeleteTeacher = (
-    id: number
-  ) => {
-    const cookies = parseCookies();
-    const teachers = cookies["teachers"];
-
-    const updateTeachers = teachers ? JSON.parse(teachers) : [];
-
-    const teacherIndex = updateTeachers.findIndex((teacher: any) => teacher.id === id);
-
-    updateTeachers.splice(teacherIndex, 1);
-
-    nookies.set(undefined, 'teachers', JSON.stringify(updateTeachers));
-
-    setTeacherList(updateTeachers);
-  }
-
   return (
     <Card>
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <div className='w-32' />
-          <div className={styles.header}>
-            <h2 className={styles.heading}>
-              Professores Ativos
-            </h2>
-            {!teachersList.filter((teacher) => teacher.isActive).length && (
-              <span className={styles.subtitle}>
-                Nenhum professor cadastrado ativo
-              </span>
-            )}
+      <div className='flex flex-col w-full gap-4'>
+        <div className={styles.wrapper}>
+          <div className={styles.headerContainer}>
+            <div className={styles.empty} />
+            <div className={styles.header}>
+              <h2 className={styles.heading}>
+                Professores Ativos
+              </h2>
+              {!!teachers && (
+                <span className={styles.subtitle}>
+                  Nenhum professor cadastrado ativo
+                </span>
+              )}
+            </div>
+            <div className={styles.empty} >
+              {!!teachers && (
+                <Button
+                  variant='success'
+                  onClick={handleNavigateToCreateTeacher}
+                >
+                  Adicionar
+                </Button>
+              )}
+            </div>
           </div>
-          <div className='w-32'>
-            <Button
-              variant='success'
-              onClick={handleNavigateToCreateTeacher}
-            >
-              Adicionar
-            </Button>
-          </div>
-        </div>
-        <div className={styles.teachersList}>
-          {teachersList
-            .filter((teacher) => teacher.isActive)
-            .map((teacher, index) => (
-              <div key={index} className={styles.teacherItem}>
-                <div className={styles.teacherInfo}>
-                  <span className={styles.teacherName}>
-                    {teacher.fullName}
-                  </span>
-                  <span className={styles.teacherEmail}>
-                    {teacher.email}
-                  </span>
-                </div>
-                <div className={styles.buttonContainer}>
-                  <div>
-                    <Button
-                      variant='success'
-                      onClick={() => push(`/teacher/${teacher.id}`)}
-                    >
-                      Ver
-                    </Button>
+          <div className={styles.teachersList}>
+            {teachers && teachers
+              .map((teacher, index) => (
+                <div key={index} className={styles.teacherItem}>
+                  <div className={styles.teacherInfo}>
+                    <span className={styles.teacherName}>
+                      {teacher.user.fullName}
+                    </span>
+                    <span className={styles.teacherEmail}>
+                      {teacher.user.email}
+                    </span>
                   </div>
-
-                  <div>
-                    <Button
-                      variant='cancel'
-                      onClick={() => handleDeleteTeacher(teacher.id)}
-                    >
-                      Deletar
-                    </Button>
+                  <div className={styles.buttonContainer}>
+                    <div>
+                      <Button
+                        variant='success'
+                        onClick={() => push(`/teacher/${teacher.id}`)}
+                      >
+                        Ver
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-        </div>
-
-        <div className={styles.content}>
-          <div className={styles.header}>
-            <h2 className={styles.heading}>
-              Professores Desativados
-            </h2>
-            {!teachersList.filter((teacher) => !teacher.isActive).length && (
-              <span className={styles.subtitle}>
-                Nenhum professor cadastrado desativados
-              </span>
-            )}
+              ))}
           </div>
         </div>
-        <div className={styles.teachersList}>
-          {teachersList
-            .filter((teacher) => !teacher.isActive)
-            .map((teacher, index) => (
-              <div key={index} className={styles.teacherItem}>
-                <div className={styles.teacherInfo}>
-                  <span className={styles.teacherName}>
-                    {teacher.fullName}
-                  </span>
-                  <span className={styles.teacherEmail}>
-                    {teacher.email}
-                  </span>
-                </div>
-                <div className={styles.buttonContainer}>
-                  <div>
-                    <Button
-                      variant='success'
-                      onClick={() => push(`/teacher/${teacher.id}`)}
-                    >
-                      Ver
-                    </Button>
-                  </div>
 
-                  <div>
-                    <Button
-                      variant='cancel'
-                      onClick={() => handleDeleteTeacher(teacher.id)}
-                    >
-                      Deletar
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-        </div>
+        {/* <hr className={styles.divider} />
+
+        <div className={styles.wrapper}>
+          <div className={styles.headerContainer}>
+            <div className={styles.empty} />
+            <div className={styles.header}>
+              <h2 className={styles.heading}>
+                Professores Desativados
+              </h2>
+              {!!teachers && (
+                <span className={styles.subtitle}>
+                  Nenhum professor cadastrado desativado
+                </span>
+              )}
+            </div>
+            <div className={styles.empty} />
+          </div>
+        </div> */}
       </div>
     </Card>
   );

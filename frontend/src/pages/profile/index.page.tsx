@@ -88,7 +88,7 @@ export default function Profile({ profileType, profile }: ProfilePageProps) {
             {profile.course && (
               <p>Curso: {profile.course.name}</p>
             )}
-            {profile.disciplines.map(item => (
+            {profile.disciplines?.map(item => (
               <p key={item.id}>Disciplina: {item.name}</p>
             ))}
           </div>
