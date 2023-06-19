@@ -3,10 +3,21 @@ import { container } from "tsyringe";
 import { instanceToPlain } from "class-transformer";
 
 // services
+import { ListGroupsService } from "@modules/groups/services/ListGroupsService";
 import { CreateGroupService } from "@modules/groups/services/CreateGroupService";
 import { ShowGroupService } from "@modules/groups/services/ShowGroupService";
 
 export class GroupsController {
+  public async index(request: Request, response: Response): Promise<Response> {
+    const listGroups = container.resolve(ListGroupsService);
+
+    const { groups } = await listGroups.execute();
+
+    return response.status(200).json({
+      groups: instanceToPlain(groups),
+    });
+  }
+
   public async store(request: Request, response: Response): Promise<Response> {
     const { emails, theme, summary, justifications, teacherId } = request.body;
     const { id } = request.user;

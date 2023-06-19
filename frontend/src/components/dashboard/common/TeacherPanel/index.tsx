@@ -6,6 +6,7 @@ import { Card } from "@/components/common/Card";
 import { Button } from '@/components/common/Button';
 
 import styles from './styles.module.css';
+import { formatLongDate } from '@/utils/format-long-date';
 
 type TeacherPanelProps = {
   groups: Group[];
@@ -18,11 +19,9 @@ export function TeacherPanel({ groups, invites, onAccept, onDecline }: TeacherPa
   const { push } = useRouter();
 
   const handleNavigateToSchedule = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    id: string
   ) => {
-    event.preventDefault();
-
-    push("/schedule");
+    push(`/schedule/${id}`);
   }
 
   return (
@@ -50,14 +49,22 @@ export function TeacherPanel({ groups, invites, onAccept, onDecline }: TeacherPa
                 <small className={styles.groupSummary}>{item.summary}</small>
               </div>
 
-              <div className={styles.buttonActions}>
-                <Button
-                  variant='success'
-                  onClick={handleNavigateToSchedule}
-                >
-                  Agendar
-                </Button>
-              </div>
+              {!item.schedule && (
+                <div className={styles.buttonActions}>
+                  <Button
+                    variant='success'
+                    onClick={() => handleNavigateToSchedule(item.id)}
+                  >
+                    Agendar
+                  </Button>
+                </div>
+              )}
+
+              {item.schedule && (
+                <div>
+                  {`${formatLongDate(new Date(item.schedule[0].date).toLocaleDateString())} ás ${item.schedule[0].hour}`}
+                </div>
+              )}
             </div>
           ))}
         </div>
