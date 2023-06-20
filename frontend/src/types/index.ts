@@ -71,6 +71,7 @@ export type Profile = {
 export type TeacherInvite = {
   id: string;
   teacher: Teacher;
+  groupId: string;
 }
 
 export type Teacher = {

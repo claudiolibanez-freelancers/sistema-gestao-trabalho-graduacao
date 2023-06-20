@@ -91,55 +91,6 @@ export default function DashboardPage({
     }
   }
 
-  const handleTeacherAccept = async (
-    id: string,
-  ) => {
-    try {
-      await api.post(`/groups/teachers/${id}/invite`);
-
-      const cookies = parseCookies();
-      const token = cookies[constants.USER_TOKEN];
-
-      const response = await api.get("/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      const { profile: { groups: groupStudents, invites: groupInvites } } = response.data;
-
-      setGroups(groupStudents);
-      setInvites(groupInvites);
-
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const handleTeacherDecline = async (
-    id: string,
-  ) => {
-    try {
-      await api.post(`/groups/teachers/${id}/decline`);
-
-      const cookies = parseCookies();
-      const token = cookies[constants.USER_TOKEN];
-
-      const response = await api.get("/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      const { profile: { groups: groupStudents, invites: groupInvites } } = response.data;
-
-      setGroups(groupStudents);
-      setInvites(groupInvites);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   return (
     <>
       <Navbar
@@ -157,8 +108,6 @@ export default function DashboardPage({
             <TeacherPanel
               groups={groups}
               invites={invites}
-              onAccept={handleTeacherAccept}
-              onDecline={handleTeacherDecline}
             />
           )}
           {profileType === 'student' && (

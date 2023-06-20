@@ -11,17 +11,21 @@ import { formatLongDate } from '@/utils/format-long-date';
 type TeacherPanelProps = {
   groups: Group[];
   invites: Invite[];
-  onAccept: (id: string) => Promise<void>;
-  onDecline: (id: string) => Promise<void>;
 };
 
-export function TeacherPanel({ groups, invites, onAccept, onDecline }: TeacherPanelProps) {
+export function TeacherPanel({ groups, invites }: TeacherPanelProps) {
   const { push } = useRouter();
 
   const handleNavigateToSchedule = (
     id: string
   ) => {
     push(`/schedule/${id}`);
+  }
+
+  const handleNavigateToGroupDetails = (
+    id: string
+  ) => {
+    push(`/group/${id}`);
   }
 
   return (
@@ -49,18 +53,25 @@ export function TeacherPanel({ groups, invites, onAccept, onDecline }: TeacherPa
                 <small className={styles.groupSummary}>{item.summary}</small>
               </div>
 
-              {!item.schedule && (
-                <div className={styles.buttonActions}>
+              {item.schedule.length === 0 && (
+                <div className={styles.buttonsActions}>
                   <Button
                     variant='success'
                     onClick={() => handleNavigateToSchedule(item.id)}
                   >
                     Agendar
                   </Button>
+
+                  <Button
+                    variant='success'
+                    onClick={() => handleNavigateToGroupDetails(item.id)}
+                  >
+                    Ver
+                  </Button>
                 </div>
               )}
 
-              {item.schedule && (
+              {item.schedule.length > 0 && (
                 <div>
                   {`${formatLongDate(new Date(item.schedule[0].date).toLocaleDateString())} ás ${item.schedule[0].hour}`}
                 </div>
@@ -75,18 +86,12 @@ export function TeacherPanel({ groups, invites, onAccept, onDecline }: TeacherPa
               <small className={styles.groupSummary}>{item.group.summary}</small>
             </div>
 
-            <div className={styles.buttonInvitesActions}>
+            <div className={styles.buttonActions}>
               <Button
                 variant='success'
-                onClick={() => onAccept(item.id)}
+                onClick={() => handleNavigateToGroupDetails(item.group.id)}
               >
-                Aceitar
-              </Button>
-              <Button
-                variant='cancel'
-                onClick={() => onDecline(item.id)}
-              >
-                Recusar
+                Ver
               </Button>
             </div>
           </div>

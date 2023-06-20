@@ -24,7 +24,6 @@ export class GroupsController {
     const files = request.files as Express.Multer.File[];
 
     const documentFile = files["documentFile"][0] as Express.Multer.File;
-    const monographFile = files["monographFile"][0] as Express.Multer.File;
 
     const createGroup = container.resolve(CreateGroupService);
 
@@ -36,7 +35,9 @@ export class GroupsController {
       justifications: JSON.parse(justifications),
       teacherId: teacherId.replaceAll('"', ""),
       documentFilename: documentFile.filename,
-      monographFilename: monographFile.filename,
+      monographFilename: files["monographFile"]
+        ? files["monographFile"][0].filename
+        : undefined,
     });
 
     return response.status(201).json({
