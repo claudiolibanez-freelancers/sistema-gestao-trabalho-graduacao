@@ -30,8 +30,9 @@ const studentSchema = z.object({
   displayName: z.string()
     .nonempty('Informe seu username'),
   secondaryEmail: z.string()
-    .email({ message: "E-mail inválido" })
-    .nullable(),
+    .email({ message: "E-mail invalído" })
+    .optional()
+    .or(z.literal('')),
   schoolId: z.string()
     .nonempty('Selecione uma unidade de ensino'),
   courseId: z.string()
